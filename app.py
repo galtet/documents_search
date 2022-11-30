@@ -113,7 +113,11 @@ def index_document():
 @swag_from(open_api_dict_search)
 def get_documents_by_word():
     case_sensitive = not request.args.get('case_sensitive') == "false"
-    words = set(request.args.get('words').split())
+    try:
+      words = set(request.args.get('words').split())
+    except Exception:
+      return json.dumps([]), 500
+
     words = filter(lambda word: len(word) > 2 and word not in excluded_words, words)
     if case_sensitive:
         word_keys = [ f"{word.upper()}:{word}" for word in words ]
